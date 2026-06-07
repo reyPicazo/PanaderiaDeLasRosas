@@ -1,0 +1,49 @@
+.fondo{
+    background-color: #FFF3E8;
+    font-family: 'Bryndan Write', sans-serif;
+}
+
+h2, p{
+    color: #6B3A20;
+}
+
+p{
+    font-size: 1.5rem;
+}
+
+
+.card {
+  background-color: #FAECD5;
+  border: 1px solid #caba9f;
+  border-radius: 32px;
+  width: 500px;
+  box-shadow: 6px 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-agregar {
+  background-color: #F5B08A;
+  border: none;
+  border-radius: 15px;
+  border: 1px solid rgb(192, 140, 112);
+  padding: 14px;
+  font-size: 1.4rem;
+  font-family: 'Bryndan Write', sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-agregar:hover {
+  transform: scale(1.03);
+  background-color: #d18e6a;
+}
+
+
+.img-producto {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  object-fit: contain;
+}

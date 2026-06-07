@@ -1,0 +1,90 @@
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<app-navbar>
+    <div class="fondo px-4 py-5" style="min-height: calc(100vh-64px);">
+        <div class="d-flex flex-column align-items-center gap-4">
+            <div class="card-con-dinos">
+                <div class="d-flex flex-column aling-items-center gap-4">
+                    <div class="card-producto">
+                        <h3 class="card-titulo">Quesaurillas</h3>
+                        <p class="card-cantidad">x{{quesadillas}}</p>
+
+                        <div class="form-agregar" *ngIf="mostrarFormQuesadillas">
+                            <input type="number" [(ngModel)]="cantidadQ" (ngModelChange)="validarQuesadillas()" class="input-cantidad" min="0" id="cantQ"/>
+                            <button class="btn-confirmar" (click)="confirmarQuesadilla()">Confirmar</button>
+                        </div>
+
+                        <button class="btn-amarillo w-100" (click)="agregarQuesadilla()">Agregar</button>
+                        
+
+                    </div>
+                    <div class="card-producto">
+                        <h3 class="card-titulo">DinoNuggets</h3>
+                        <p class="card-cantidad">x{{nuggets}}</p>
+
+                        <div class="form-agregar" *ngIf="mostrarFormNuggets">
+                            <input type="number" [(ngModel)]="cantidadN" (ngModelChange)="validarNuggets()" class="input-cantidad" min="0" id="cantN"/>
+                            <button class="btn-confirmar" (click)="confirmarNuggets()">Confirmar</button>
+                        </div>
+                        <button class="btn-amarillo w-100" (click)="agregarNuggets()">Agregar</button>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="d-flex gap-4 mt-2">
+                <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+                <button class="btn-amarillo px-5" (click)="crearOrden()">Crear</button>
+            </div>
+            <div class="overlay" *ngIf="mostrarError">
+                <div class="modal-confirm p-4 text-center">
+                    <h4>Error</h4>
+                    <p class="text-muted">Por favor, ingresa una cantidad válida para ambos productos.</p>
+                    
+                    <div class="d-flex justify-content-center mt-3">
+                        <button class="btn-amarillo px-4" (click)="cerrarError()">Entendido</button>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="overlay" *ngIf="mostrarConfirmacion">
+                <div class="modal-confirm p-4 text-center">
+                    <h4>Confirma tu identidad</h4>
+                    <p class="text-muted">Para cancelar necesitas verificarte</p>
+                    <div class="alert alert-danger" *ngIf="errorMSG">{{errorMSG}}</div>
+
+                    <input type="text" [(ngModel)]="admin" placeholder="Usuario" class="form-control mb-2">
+                    <input type="password" [(ngModel)]="password" placeholder="Contraseña" class="form-control mb-3">
+
+                    <div class="d-flex gap-3 justify-content-center">
+                        <button class="btn btn-secondary" (click)="mostrarConfirmacion=false">Cancelar</button>
+                        <button class="btn-cancelar" (click)="confirmarCancelar()">Confirmar</button>
+
+                    </div>
+                </div>
+            </div>
+                    <!-- Modal Error Quesadillas -->
+            <div class="overlay" *ngIf="mostrarErrorQ">
+                <div class="modal-confirm p-4 text-center">
+                    <h4>Sin inventario</h4>
+                    <p class="text-muted">No hay suficientes Quesaurillas. Cantidad máxima: {{inventarioService.getCantidad(1)}}</p>
+                    <div class="d-flex justify-content-center mt-3">
+                    <button class="btn-amarillo px-4" (click)="cerrarErrorQ()">Entendido</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Error Nuggets -->
+            <div class="overlay" *ngIf="mostrarErrorN">
+                <div class="modal-confirm p-4 text-center">
+                    <h4>Sin inventario</h4>
+                    <p class="text-muted">No hay suficientes DinoNuggets. Cantidad máxima: {{inventarioService.getCantidad(2)}}</p>
+                    <div class="d-flex justify-content-center mt-3">
+                    <button class="btn-amarillo px-4" (click)="cerrarErrorN()">Entendido</button>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    
+</app-navbar>

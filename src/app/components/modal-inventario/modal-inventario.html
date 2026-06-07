@@ -1,0 +1,12 @@
+<div class="modal-overlay" *ngIf="visible">
+    <div class="modal-card">
+        <h2>{{ titulo }}</h2>
+        
+        <input type="number" [(ngModel)]="cantidad" min="1" class="input-cantidad">
+
+        <div class="d-flex gap-3">
+            <button class="btn-modal btn-cancelar" (click)="cerrar()">Cancelar</button>
+            <button class="btn-modal btn-confirmar" (click)="confirmar()">Confirmar</button>
+        </div>
+    </div>
+</div>

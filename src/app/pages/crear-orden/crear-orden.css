@@ -1,0 +1,128 @@
+.fondo {
+  background-color: #FFF3E8;
+  font-family: 'Bryndan Write', sans-serif;
+}
+
+.card-producto {
+  background-color: #FAECD5;
+  border: 1px solid #caba9f;
+  border-radius: 24px;
+  padding: 30px;
+  width: 380px;
+  text-align: center;
+  color: #6B3A20;
+}
+
+.card-titulo {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-cantidad {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-agregar {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.input-cantidad {
+  width: 100px;
+  border-radius: 12px;
+  border: none;
+  padding: 8px;
+  font-size: 1.2rem;
+  font-family: 'Bryndan Write', sans-serif;
+  text-align: center;
+}
+
+.btn-confirmar {
+  background-color: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-family: 'Bryndan Write', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-amarillo {
+  background-color: #F5B08A;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-size: 1.3rem;
+  font-family: 'Bryndan Write', sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.btn-amarillo:hover {
+  transform: scale(1.03);
+  background-color: #d18e6a;
+}
+
+.btn-cancelar {
+  background-color: #6B3A20;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-size: 1.3rem;
+  font-family: 'Bryndan Write', sans-serif;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.btn-cancelar:hover {
+  transform: scale(1.03);
+  background-color: #4b2713;
+}
+
+.overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-confirm {
+  background: white;
+  border-radius: 24px;
+  width: 360px;
+  font-family: 'Bryndan Write', sans-serif;
+}
+
+.card-con-dinos {
+  display: flex;
+  align-items: flex-end; 
+  gap: 24px;
+  position: relative;
+}
+
+.dino {
+  width: 300px;       /* ajusta el tamaño a tu gusto */
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.t-rex {
+  
+  margin-bottom: 30px;   /* ajusta para que quede a la altura que quieras */
+}
+
+.velociraptor {
+  margin-bottom: -130px;
+}

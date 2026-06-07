@@ -1,0 +1,43 @@
+.navbar-dino {
+  background-color: #6B3A20;
+  height: 64px;
+  font-family: 'Bryndan Write', sans-serif;
+  box-shadow: 0px 7px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  color: #F5DEC0;
+  font-weight: bold;
+}
+
+.nav-link-dino {
+  font-size: 1.3rem;
+  color: #F5DEC0;
+  text-decoration: none;
+}
+
+.nav-link-dino:hover {
+  color: #d1b99b;
+}
+
+.nav-usuario {
+  font-size: 1.1rem;
+  color: #F5DEC0;
+  white-space: nowrap;
+}
+
+
+@media (max-width: 991px) {
+  .navbar-dino {
+    height: auto;        
+    padding-bottom: 12px;
+  }
+
+  .nav-link-dino {
+    padding: 8px 0;
+    display: block;      
+  }
+}
+

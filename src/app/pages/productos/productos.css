@@ -1,0 +1,188 @@
+.fondo {
+  background-color: #FFF3E8;
+  font-family: 'Bryndan Write', sans-serif;
+  min-height: calc(100vh - 64px);
+  padding: 1rem;
+}
+
+/* Título */
+.titulo-seccion {
+  color: #6B3A20;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* Botón amarillo (igual al del proyecto) */
+.btn-amarillo {
+  background-color: #F5B08A;
+  border: 1px solid rgb(192, 140, 112);
+  border-radius: 15px;
+  padding: 10px 24px;
+  font-size: 1.1rem;
+  font-family: 'Bryndan Write', sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-amarillo:hover {
+  transform: scale(1.03);
+  background-color: #d4936f;
+}
+
+/* Contenedor de tabla */
+.tabla-container {
+  border: 1px solid #caba9f;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 6px 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Tabla */
+.tabla-dino {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tabla-dino th,
+.tabla-dino td {
+  padding: 14px 20px;
+  text-align: left;
+  font-family: 'Bryndan Write', sans-serif;
+  font-size: 1.1rem;
+}
+
+/* Header */
+.fila-header {
+  background-color: #6B3A20;
+}
+
+.fila-header th {
+  color: white;
+  font-size: 1.2rem;
+}
+
+/* Filas alternadas */
+.fila-roja {
+  background-color: #ffc38b;
+}
+
+.fila-roja td {
+  color: #6B3A20;
+}
+
+.fila-blanca {
+  background-color: #ffd9b5;
+}
+
+.fila-blanca td {
+  color: #6B3A20;
+}
+
+/* Columna de acciones */
+.td-acciones {
+  width: 60px;
+  text-align: center;
+  position: relative;
+}
+
+.acciones-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Botón "..." */
+.btn-puntos {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 2px 10px;
+  border-radius: 8px;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.btn-puntos:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Menú flotante */
+.menu-flotante {
+  position: fixed;
+  right: 0;
+  top: 110%;
+  background-color: white;
+  border: 1px solid #caba9f;
+  border-radius: 12px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  min-width: 130px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.opcion-menu {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  text-align: left;
+  font-family: 'Bryndan Write', sans-serif;
+  font-size: 1rem;
+  color: #000000;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.opcion-menu:hover {
+  background-color: #f0f0ff;
+}
+
+.opcion-borrar {
+  color: #6B3A20;
+  border-top: 1px solid #eee;
+}
+
+.opcion-borrar:hover {
+  background-color: #fff0f0;
+}
+
+
+.toast-alert {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+.toast-alert.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.toast-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FCEBEB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.toast-icon i { color: #A32D2D; font-size: 15px; }
