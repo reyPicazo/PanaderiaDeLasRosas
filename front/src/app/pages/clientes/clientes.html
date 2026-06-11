@@ -1,0 +1,70 @@
+<app-navbar>
+  <div class="fondo d-flex justify-content-center align-items-start" style="min-height: calc(100vh - 64px);">
+    <div class="w-100 px-4 pt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="titulo-seccion">Clientes</h2>
+        <button class="btn-amarillo" (click)="abrirModalCrear()">+ Nuevo Cliente</button>
+      </div>
+      <div class="tabla-container">
+        <table class="tabla-dino w-100">
+          <thead>
+            <tr class="fila-header">
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientes; let i = index"
+                [class]="i % 2 === 0 ? 'fila-roja' : 'fila-blanca'">
+              <td>{{ cliente.idCliente }}</td>
+              <td>{{ cliente.nombre }}</td>
+              <td>{{ cliente.direccion }}</td>
+              <td>{{ cliente.telefono }}</td>
+              <td class="td-acciones">
+                <div class="acciones-wrapper">
+                  <button class="btn-puntos" (click)="toggleMenu(cliente.idCliente, $event)">&#8942;</button>
+                  <div class="menu-flotante" *ngIf="menuAbierto === cliente.idCliente" [style.top.px]="menuPosicion.top" [style.left.px]="menuPosicion.left">
+                    <button class="opcion-menu" (click)="mostrarEditar(cliente)">✏️ Editar</button>
+                    <button class="opcion-menu opcion-borrar" (click)="borrarCliente(cliente)">🗑️ Borrar</button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal Crear/Editar Cliente -->
+    <div class="overlay" *ngIf="mostrarModal">
+      <div class="modal-confirm p-4 text-center">
+        <h4>{{ clienteSeleccionado ? 'Editar Cliente' : 'Nuevo Cliente' }}</h4>
+        <input type="text" [(ngModel)]="nuevoCliente"
+               [placeholder]="clienteSeleccionado ? clienteSeleccionado.nombre : 'Nombre del cliente'"
+               class="form-control mb-2">
+        <input type="text" [(ngModel)]="nuevaDireccion"
+               [placeholder]="clienteSeleccionado ? clienteSeleccionado.direccion : 'Dirección'"
+               class="form-control mb-2">
+        <input type="text" [(ngModel)]="nuevoTelefono"
+               [placeholder]="clienteSeleccionado ? clienteSeleccionado.telefono : 'Teléfono'"
+               class="form-control mb-3">
+        <div class="d-flex gap-3 justify-content-center">
+          <button class="btn btn-secondary" (click)="mostrarModal = false">Cancelar</button>
+          <button class="btn-amarillo" (click)="clienteSeleccionado ? editarCliente() : crearCliente()">
+            {{ clienteSeleccionado ? 'Guardar' : 'Crear' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-alert" [class.show]="mostrarToast">
+    <div class="toast-icon">
+      <i class="ti ti-ban"></i>
+    </div>
+    <span>{{ mensajeToast }}</span>
+  </div>
+</app-navbar>
