@@ -15,7 +15,7 @@ router.post('/ordenes', async (req, res) => {
 
         // 1. Insertar en la tabla Orden
         const [ordenResult] = await connection.query(
-            'INSERT INTO Orden (fecha, ClienteId, EmpleadoId) VALUES (?, ?, ?)',
+            'INSERT INTO Orden (fecha, ClienteId, EmpleadoId, estado) VALUES (?, ?, ?, 0)',
             [fecha, ClienteId, EmpleadoId]
         );
         const nuevoIdOrden = ordenResult.insertId;
@@ -51,6 +51,40 @@ router.put('/ordenes/:id', async (req, res) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
 });
 
+
+router.get('/ordenes', async (req, res) => {
+
+    const{estado}=req.query;
+
+    try{
+        let query = `
+            SELECT o.idOrden, o.fecha, o.estado,
+                   c.idCliente, c.nombre AS nombreCliente,
+                   e.idEmpleado, e.nombre AS nombreEmpleado
+            FROM orden o
+            JOIN cliente c ON o.ClienteId = c.idCliente
+            JOIN empleado e ON o.EmpleadoId = e.idEmpleado
+        `;
+        const params=[];
+
+        if(estado !== undefined){
+            query += ' WHERE o.estado = ?';
+            params.push(estado);
+        }
+
+        const [rows] = await db.query(query, params);
+        res.json(rows);
+
+    }catch(error){
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.get('/ordenes/:id/estado', async (req, res) => {
+
+});
+
+
 // Editar la cantidad de un pan específico dentro de una orden
 router.put('/ordenes/:idOrden/detalles/:idPan', async (req, res) => {
     const { idOrden, idPan } = req.params;
@@ -62,6 +96,45 @@ router.put('/ordenes/:idOrden/detalles/:idPan', async (req, res) => {
         );
         res.json({ message: 'Cantidad de producto modificada en la orden' });
     } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+
+router.put('/ordenes/:id/estado', async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+    try {
+        await db.query('UPDATE Orden SET estado = ? WHERE idOrden = ?', [estado, id]);
+        res.json({ message: 'Estado de orden actualizado' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+router.put('/ordenes/:id', async (req, res) => {
+    const { id } = req.params;
+    const { fecha } = req.body;
+    try {
+        await db.query('UPDATE Orden SET fecha = ? WHERE idOrden = ?', [fecha, id]);
+        res.json({ message: 'Fecha de orden actualizada' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+router.put('/ordenes/:idOrden/detalles/:idPan', async (req, res) => {
+    const { idOrden, idPan } = req.params;
+    const { cantidad } = req.body;
+    try {
+        await db.query(
+            'UPDATE Detalle_Orden SET cantidad = ? WHERE OrdenidOrden = ? AND PanidPan = ?',
+            [cantidad, idOrden, idPan]
+        );
+        res.json({ message: 'Cantidad de producto modificada en la orden' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // 3. BAJAS (Eliminar)

@@ -72,16 +72,16 @@ export class Home implements OnInit, OnDestroy {
   }
 
   async eliminarOrden(orden:Orden){
-    if(await this.auth.login(this.admin, this.password)){
+    
       if(this.ordenActual){
-      this.ordenService.eliminarOrden(orden.id);
-      this.ordenes=this.ordenService.getOrdenes();
-      this.ordenActual=this.ordenes.length > 0 ? this.ordenes[0] : undefined;
-      this.cancelar=false;
-      this.admin='';
-      this.password='';
-    }
-    }
+        this.ordenService.eliminarOrden(orden.id);
+        this.ordenes=this.ordenService.getOrdenes();
+        this.ordenActual=this.ordenes.length > 0 ? this.ordenes[0] : undefined;
+        this.cancelar=false;
+        this.admin='';
+        this.password='';
+      }
+    
     
   }
 

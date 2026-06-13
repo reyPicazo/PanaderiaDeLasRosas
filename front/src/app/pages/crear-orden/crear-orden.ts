@@ -1,12 +1,15 @@
-import { Component, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import { Orden } from '../../models/orden.model';
-import { OrdenService } from '../../services/orden';
+import { OrdenService } from '../../services/orden.service';
 import { Router } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
-import { InventarioSQ } from '../../services/inventario-sq';
+import { PanService } from '../../services/pan';
+import { Pan } from '../../models/pan';
+import {Cliente} from '../../models/cliente';
+import { ClienteService } from '../../services/cliente';
 
 @Component({
   selector: 'app-crear-orden',
@@ -16,148 +19,105 @@ import { InventarioSQ } from '../../services/inventario-sq';
   styleUrl: './crear-orden.css',
 })
 export class CrearOrden implements OnInit {
-  quesadillas: number = 0;
-  nuggets: number = 0;
-  mostrarFormQuesadillas: boolean = false;
-  mostrarFormNuggets: boolean = false;
-  cantidadQ:number=0;
-  cantidadN:number=0;
-  mostrarConfirmacion: boolean = false;
-  admin:string='';
-  password:string='';
-  errorMSG:string='';
-  mostrarError: boolean = false;
-  editar:boolean=false;
-  ordenId:number=0;
-  OrdenAux:Orden | undefined;
-  ordenEditar:Orden | undefined;
-  mostrarErrorQ: boolean = false;
-  mostrarErrorN: boolean = false;
 
-  constructor(private ordenService: OrdenService, private router: Router, private authService: AuthService, public inventarioService: InventarioSQ) {
+panes: Pan[] = [];
+  clientes: Cliente[] = [];
+  clienteSeleccionado: Cliente | null = null;
+  mostrarModalCliente: boolean = false;
+  mensajeToast: string = '';
+  mostrarToast: boolean = false;
+  private toastTimer: any;
+
+
+  constructor(private ordenService: OrdenService, private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef, private panService: PanService, private clienteService: ClienteService) {}
     
-  }
+  
 
-  ngOnInit() {
+  ngOnInit(){
     
-    const ordenEditarId = this.ordenService.getordenEditar();
-    if(ordenEditarId){
-       this.ordenEditar= this.ordenService.getOrdenById(ordenEditarId!);
-    }
-    
-    if(this.ordenEditar){
-      this.editar=true;
-      this.quesadillas =this.ordenEditar.quesadillas;
-      this.nuggets = this.ordenEditar.nuggets;
-      this.cantidadQ=this.ordenEditar.quesadillas;
-      this.cantidadN=this.ordenEditar.nuggets;
-    }
-  }
-
-  agregarQuesadilla():void{
-    this.mostrarFormQuesadillas = true;
-  }
-
-  validarQuesadillas():void{
-    if(Number(this.cantidadQ) > this.inventarioService.getCantidad(1)){
-    this.mostrarErrorQ = true;
-      this.cantidadQ = this.inventarioService.getCantidad(1);
-      const input = document.getElementById('cantQ') as HTMLInputElement;
-      if(input) input.value = this.cantidadQ.toString();
-    }
-  }
-
-  agregarNuggets():void{
-    this.mostrarFormNuggets = true;
-  }
-
-  validarNuggets():void{
-    if(Number(this.cantidadN) > this.inventarioService.getCantidad(2)){
-      this.mostrarErrorN = true;
-      this.cantidadN = this.inventarioService.getCantidad(2);
-      const input = document.getElementById('cantN') as HTMLInputElement;
-      if(input) input.value = this.cantidadN.toString();
-      }
-  }
-
-  confirmarQuesadilla():void{
-    this.quesadillas = this.cantidadQ;
-    this.mostrarFormQuesadillas = false;
-    
-  }
-
-  confirmarNuggets():void{
-    this.nuggets = this.cantidadN;
-    this.mostrarFormNuggets = false;
-    
-  }
-
-  cerrarErrorQ():void{
-    this.mostrarErrorQ = false;
-  }
-
-  cerrarErrorN():void{
-    this.mostrarErrorN = false;
+    this.getProductos();
+    this.getClientes();
   }
 
 
-  crearOrden():void{
-    if(this.quesadillas <=0 && this.nuggets <=0){
-      this.mostrarError = true;
+  toast(mensaje: string) {
+    this.mensajeToast = mensaje;
+    this.mostrarToast = true;
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => (this.mostrarToast = false), 2800);
+  }
+
+
+  getProductos(): void {
+    this.panService.getPanes().subscribe({
+      next: (data) => {
+        (this.panes = data);
+        this.cdr.detectChanges();
+      },
+      error: (err) => this.toast('No se pudieron cargar los productos'),
+    });
+  }
+
+  getClientes(): void {
+    this.clienteService.getClientes().subscribe({
+      next: (data) => {
+        this.clientes = data;
+        this.cdr.detectChanges();
+      },
+      error: () => this.toast('No se pudieron cargar los clientes'),
+    });
+  }
+
+  agregarCantidad(pan:Pan ):void{
+    pan.mostrarForm= true;
+  }
+
+  confirmarCantidad(pan:Pan):void{
+    pan.mostrarForm=false;
+  }
+
+  abrirModalCiente(): void{
+    const detalles=this.panes.filter(p=> p.cantidad && p.cantidad>0);
+    if(detalles.length===0){
+      this.toast('Agregar al menos un producto antes de continuar');
       return;
     }
-    if(this.ordenService.getOrdenById(this.ordenEditar?.id!)&& this.editar){
-      const quesadilla=this.inventarioService.getProducto(1);
-      const nugget=this.inventarioService.getProducto(2);
-      const precioQ=quesadilla?.precio ?? 0;
-      const precioN=nugget?.precio ?? 0;
+    this.mostrarModalCliente=true;
+  }
 
-      this.ordenEditar!.quesadillas=this.quesadillas;
-      this.ordenEditar!.nuggets=this.nuggets;
-      this.ordenEditar!.total=(this.quesadillas*precioQ) + (this.nuggets*precioN);
-
-      this.inventarioService.reducirCantidad(1, this.quesadillas);
-      this.inventarioService.reducirCantidad(2, this.nuggets);
-
-      this.ordenService.setOrden(this.ordenEditar!);
-      this.editar=false;
-      this.ordenService.deleteOrdenEditar();
-      this.router.navigate(['/home']);
+  confirmarOrden():void{
+    if(!this.clienteSeleccionado){
+      this.toast('Selecciona un cliente para continuar');
       return;
     }
 
-    
+    const detalles=this.panes.filter(p=>p.cantidad && p.cantidad>0).map(p=>({
+      PanidPan: p.idPan,cantidad: p.cantidad!
+    }));
 
-    //crearOrden ya maneja la reducciíon del inventario
-    this.ordenService.crearOrden(this.quesadillas, this.nuggets);
-    this.router.navigate(['/home']);
+    const payload={
+      fecha: new Date().toISOString().split('T')[0],
+      ClienteId: this.clienteSeleccionado.idCliente,
+      EmpleadoId:this.authService.getEmpleado()!.idEmpleado,
+      detalles
+    };
 
-  }
-
-  editarOrden(orden:Orden):void{
-    
-  }
-
-  cerrarError():void{
-    this.mostrarError = false;
+    this.ordenService.crearOrden(payload).subscribe({
+      next:()=>this.router.navigate(['/home']),
+      error:()=>this.toast('Error al crear la orden, intenta nuevamente')
+    });
   }
 
   cancelar():void{
-    this.mostrarConfirmacion = true;
-
+    this.router.navigate(['/home']);
   }
 
- async confirmarCancelar():Promise<void>{
-    if(await this.authService.login(this.admin, this.password)){
-      if(this.editar && this.ordenEditar){
-        this.inventarioService.reducirCantidad(1, this.ordenEditar.quesadillas);
-        this.inventarioService.reducirCantidad(2, this.ordenEditar.nuggets);
-        this.ordenService.deleteOrdenEditar();
-      }
-      this.router.navigate(['/home']);
-    }
-    else{
-      this.errorMSG = 'Credenciales incorrectas. Intente de nuevo.';
-    }
-  }
+
+
+ 
+    
 }
+
+    
+
+    
