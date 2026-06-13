@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import {CommonModule} from '@angular/common';
-import {NgIf} from '@angular/common';
+
 import {inject} from '@angular/core';
 
 
@@ -10,7 +10,7 @@ import {inject} from '@angular/core';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule, NgIf, CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
@@ -24,7 +24,7 @@ export class Navbar {
   }
 
   ngOnInit(){
-    this.usuario = this.auth.getUser();
+    this.usuario = this.auth.getEmpleado()?.nombre || '';
   }
 
   toggleMenu(): void {
@@ -35,9 +35,7 @@ export class Navbar {
     this.router.navigate(['/login']);
   }
 
-  get esAdmin(): boolean {
-    return this.auth.getUser().toLowerCase() === 'admin';
-  }
+  
 
   
 }

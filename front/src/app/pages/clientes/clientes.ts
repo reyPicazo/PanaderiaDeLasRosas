@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { Navbar } from '../../components/navbar/navbar';
@@ -29,7 +29,8 @@ export class Clientes implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
-    public clienteService: ClienteService
+    public clienteService: ClienteService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -116,7 +117,11 @@ export class Clientes implements OnInit {
 
   getClientes() {
     this.clienteService.getClientes().subscribe({
-      next: (data) => (this.clientes = data),
+      next: (data) => { 
+        console.log('Clientes recibidos:', data);
+        this.clientes = data;
+        this.cdr.detectChanges();
+      },
       error: () => this.toast('No se pudieron cargar los clientes'),
     });
   }

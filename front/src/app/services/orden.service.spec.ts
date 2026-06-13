@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { QuesaurillasDb } from './quesaurillas-db';
+import { OrdenService } from './orden.service';
 
-describe('QuesaurillasDb', () => {
-  let service: QuesaurillasDb;
+describe('OrdenService', () => {
+  let service: OrdenService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(QuesaurillasDb);
+    service = TestBed.inject(OrdenService);
   });
 
   it('should be created', () => {
