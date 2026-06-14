@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { Orden } from '../../models/orden.model';
+
 import { OrdenService } from '../../services/orden.service';
 import { Router } from '@angular/router';
 import { Navbar } from '../../components/navbar/navbar';
@@ -10,6 +10,7 @@ import { PanService } from '../../services/pan';
 import { Pan } from '../../models/pan';
 import {Cliente} from '../../models/cliente';
 import { ClienteService } from '../../services/cliente';
+import {Orden} from '../../models/orden';
 
 @Component({
   selector: 'app-crear-orden',
@@ -20,21 +21,21 @@ import { ClienteService } from '../../services/cliente';
 })
 export class CrearOrden implements OnInit {
 
-panes: Pan[] = [];
+  panes: Pan[] = [];
   clientes: Cliente[] = [];
   clienteSeleccionado: Cliente | null = null;
   mostrarModalCliente: boolean = false;
   mensajeToast: string = '';
   mostrarToast: boolean = false;
   private toastTimer: any;
-
+  ordenEditando: Orden | null=null;
 
   constructor(private ordenService: OrdenService, private router: Router, private authService: AuthService, private cdr: ChangeDetectorRef, private panService: PanService, private clienteService: ClienteService) {}
     
   
 
   ngOnInit(){
-    
+    this.ordenEditando=this.ordenService.getOrdenEditar();
     this.getProductos();
     this.getClientes();
   }
@@ -52,6 +53,15 @@ panes: Pan[] = [];
     this.panService.getPanes().subscribe({
       next: (data) => {
         (this.panes = data);
+
+        if(this.ordenEditando?.detalles){
+          this.panes=this.panes.map(p=>{
+            const detalle=this.ordenEditando!.detalles!.find(d=> d.pan.idPan === p.idPan);
+            return detalle ? {...p, cantidad: detalle.cantidad} : p;
+          });
+
+          this.clienteSeleccionado=this.ordenEditando.cliente;
+        }
         this.cdr.detectChanges();
       },
       error: (err) => this.toast('No se pudieron cargar los productos'),
@@ -94,10 +104,29 @@ panes: Pan[] = [];
     const detalles=this.panes.filter(p=>p.cantidad && p.cantidad>0).map(p=>({
       PanidPan: p.idPan,cantidad: p.cantidad!
     }));
+    const hoy = new Date();
+    const fecha = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
 
+    if(this.ordenEditando){
+      this.ordenService.actualizarDetallesOrden(this.ordenEditando.idOrden, this.clienteSeleccionado.idCliente,detalles).subscribe({
+        next:()=>{
+          
+          this.ordenService.clearOrdenEditar();
+          this.router.navigate(['/home']);
+        },
+        error:()=> this.toast('Error al actualizar la orden, intenta nuevamente')
+      });
+      
+    }else{
+      this.crearNuevaOrden(fecha,detalles);
+    }
+    
+  }
+
+  crearNuevaOrden(fecha:string, detalles:{PanidPan: number, cantidad: number}[]):void{
     const payload={
-      fecha: new Date().toISOString().split('T')[0],
-      ClienteId: this.clienteSeleccionado.idCliente,
+      fecha,
+      ClienteId: this.clienteSeleccionado!.idCliente,
       EmpleadoId:this.authService.getEmpleado()!.idEmpleado,
       detalles
     };
@@ -109,6 +138,7 @@ panes: Pan[] = [];
   }
 
   cancelar():void{
+    this.ordenService.clearOrdenEditar();
     this.router.navigate(['/home']);
   }
 

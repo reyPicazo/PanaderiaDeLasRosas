@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Orden } from '../models/orden.model';
+import { Orden } from '../models/orden';
 
 
 interface CrearOrdenPagar{
@@ -17,15 +17,16 @@ interface CrearOrdenPagar{
 })
 export class OrdenService {
   private apiUrl = `${environment.apiUrl}/ordenes`;
-
+  private ordenEditar: Orden | null=null;
   constructor(private http: HttpClient) {}
 
 
-  getOrdenes(estado?:-1|0|1): Observable<Orden[]> {
+  getOrdenes(estado?:-1|0|1, empleadoId?: number): Observable<Orden[]> {
     let params =new HttpParams();
     if(estado !== undefined){
       params = params.set('estado', estado.toString());
     }
+     if (empleadoId !== undefined) params = params.set('EmpleadoId', empleadoId.toString());
     return this.http.get<Orden[]>(this.apiUrl, {params});
   }
 
@@ -57,4 +58,21 @@ export class OrdenService {
   eliminarOrden(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.apiUrl}/${id}`);
   }
+
+  setOrdenEditar(orden: Orden){
+    this.ordenEditar=orden;
+  }
+  getOrdenEditar(): Orden | null{
+    return this.ordenEditar;
+  }
+
+  clearOrdenEditar(){
+    this.ordenEditar=null;
+  }
+
+  actualizarDetallesOrden(idOrden: number, ClienteId: number, detalles: { PanidPan: number; cantidad: number }[]): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(`${this.apiUrl}/${idOrden}/detalles`, { ClienteId, detalles });
+  }
+
+
 }
