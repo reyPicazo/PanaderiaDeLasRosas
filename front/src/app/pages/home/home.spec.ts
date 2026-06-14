@@ -6,8 +6,8 @@ import { vi } from 'vitest';
 
 import { Home } from './home';
 import { AuthService } from '../../services/auth';
-import { OrdenService } from '../../services/orden';
-import { Orden } from '../../models/orden.model';
+import { OrdenService } from '../../services/orden.service';
+import { Orden } from '../../models/orden';
 
 describe('Home', () => {
 
