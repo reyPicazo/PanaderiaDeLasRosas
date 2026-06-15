@@ -67,4 +67,5 @@ router.get('/panes', async (req, res) => {
     }
 });
 
+
 module.exports = router;

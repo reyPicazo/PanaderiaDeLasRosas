@@ -1,0 +1,211 @@
+.fondo {
+  background-color: #FFF3E8;
+  font-family: 'Bryndan Write', sans-serif;
+  min-height: calc(100vh - 64px);
+  padding: 2rem;
+}
+
+.cabecera {
+  margin-bottom: 2rem;
+}
+
+.titulo-seccion {
+  color: #6B3A20;
+  font-size: 2rem;
+  margin: 0;
+}
+
+/* ── Grid de tarjetas ── */
+.grid-ordenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.tarjeta-orden {
+  background-color: #ffd9b5;
+  border: 1px solid #caba9f;
+  border-radius: 18px;
+  padding: 1.2rem 1.4rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  font-family: 'Bryndan Write', sans-serif;
+}
+
+.tarjeta-orden:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 14px rgba(0,0,0,0.2);
+}
+
+.tarjeta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orden-id {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #6B3A20;
+}
+
+.tarjeta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.95rem;
+  color: #6B3A20;
+}
+
+/* ── Badges de estado ── */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  font-family: 'Bryndan Write', sans-serif;
+}
+
+.badge-pendiente {
+  background-color: #fff0c2;
+  color: #7a5c00;
+  border: 1px solid #e6c84a;
+}
+
+.badge-pagada {
+  background-color: #d4f0d4;
+  color: #1a6b1a;
+  border: 1px solid #6bc96b;
+}
+
+.badge-cancelada {
+  background-color: #fde8e8;
+  color: #8b1a1a;
+  border: 1px solid #e88080;
+}
+
+/* ── Modal ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-detalle {
+  background: #FFF3E8;
+  border-radius: 24px;
+  padding: 2rem;
+  width: 600px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 8px 8px 24px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.modal-header-dino {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header-dino h3 {
+  color: #6B3A20;
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.modal-meta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  color: #6B3A20;
+  font-size: 0.95rem;
+}
+
+.modal-footer-dino {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Tabla (igual al resto del proyecto) ── */
+.tabla-container {
+  border: 1px solid #caba9f;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.15);
+}
+
+.tabla-dino {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tabla-dino th,
+.tabla-dino td {
+  padding: 12px 18px;
+  text-align: left;
+  font-family: 'Bryndan Write', sans-serif;
+  font-size: 1rem;
+}
+
+.fila-header {
+  background-color: #6B3A20;
+}
+
+.fila-header th {
+  color: white;
+}
+
+.fila-roja {
+  background-color: #ffc38b;
+}
+.fila-roja td { color: #6B3A20; }
+
+.fila-blanca {
+  background-color: #ffd9b5;
+}
+.fila-blanca td { color: #6B3A20; }
+
+.fila-total {
+  background-color: #f5b08a;
+}
+.fila-total td { color: #6B3A20; font-weight: bold; }
+
+/* ── Botón amarillo ── */
+.btn-amarillo {
+  background-color: #F5B08A;
+  border: 1px solid rgb(192, 140, 112);
+  border-radius: 15px;
+  padding: 10px 24px;
+  font-size: 1.1rem;
+  font-family: 'Bryndan Write', sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.1s;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+}
+.btn-amarillo:hover {
+  transform: scale(1.03);
+  background-color: #d4936f;
+}
+
+/* ── Vacío ── */
+.vacio {
+  text-align: center;
+  color: #6B3A20;
+  font-size: 1.2rem;
+  margin-top: 4rem;
+}

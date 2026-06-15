@@ -80,6 +80,7 @@ export class CrearOrden implements OnInit {
 
   agregarCantidad(pan:Pan ):void{
     pan.mostrarForm= true;
+
   }
 
   confirmarCantidad(pan:Pan):void{
@@ -141,6 +142,9 @@ export class CrearOrden implements OnInit {
     this.ordenService.clearOrdenEditar();
     this.router.navigate(['/home']);
   }
+
+
+
 
 
 

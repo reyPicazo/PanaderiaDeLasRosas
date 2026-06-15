@@ -8,6 +8,7 @@ import { Administrar } from './pages/administrar/administrar';
 import { Productos } from './pages/productos/productos';
 import { Empleados } from './pages/empleados/empleados';
 import { Clientes } from './pages/clientes/clientes';
+import { ReporteOrdenes } from './pages/reporte-ordenes/reporte-ordenes';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -18,4 +19,5 @@ export const routes: Routes = [
     {path: 'productos', component: Productos, canActivate: [authGuard]},
     {path: 'empleados', component: Empleados, canActivate: [authGuard]},
     {path: 'clientes', component: Clientes, canActivate: [authGuard]},
+    {path: 'inventario', component: ReporteOrdenes, canActivate: [authGuard]},
 ];
