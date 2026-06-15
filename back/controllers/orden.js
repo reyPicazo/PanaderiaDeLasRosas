@@ -54,9 +54,9 @@ router.get('/ordenes', async (req, res) => {
         SELECT o.idOrden, o.fecha, o.estado,
                c.idCliente, c.nombre AS nombreCliente, c.direccion AS direccionCliente, c.telefono AS telefonoCliente,
                e.idEmpleado, e.nombre AS nombreEmpleado, e.direccion AS direccionEmpleado, e.telefono AS telefonoEmpleado
-        FROM orden o
-        JOIN cliente c ON o.ClienteId = c.idCliente
-        JOIN empleado e ON o.EmpleadoId = e.idEmpleado
+        FROM Orden o
+        JOIN Cliente c ON o.ClienteId = c.idCliente
+        JOIN Empleado e ON o.EmpleadoId = e.idEmpleado
         WHERE 1=1
     `;
     const params = [];
@@ -102,9 +102,9 @@ router.get('/ordenes/:id', async (req, res) => {
             SELECT o.idOrden, o.fecha, o.estado,
                    c.idCliente, c.nombre AS nombreCliente, c.direccion AS direccionCliente, c.telefono AS telefonoCliente,
                    e.idEmpleado, e.nombre AS nombreEmpleado, e.direccion AS direccionEmpleado, e.telefono AS telefonoEmpleado
-            FROM orden o
-            JOIN cliente c ON o.ClienteId = c.idCliente
-            JOIN empleado e ON o.EmpleadoId = e.idEmpleado
+            FROM Orden o
+            JOIN Cliente c ON o.ClienteId = c.idCliente
+            JOIN Empleado e ON o.EmpleadoId = e.idEmpleado
             WHERE o.idOrden = ?
         `, [id]);
 
@@ -114,8 +114,8 @@ router.get('/ordenes/:id', async (req, res) => {
 
         const [detalles] = await db.query(`
             SELECT d.cantidad, p.idPan, p.nombre, p.precio
-            FROM detalle_orden d
-            JOIN pan p ON d.PanidPan = p.idPan
+            FROM Detalle_Orden d
+            JOIN Pan p ON d.PanidPan = p.idPan
             WHERE d.OrdenidOrden = ?
         `, [id]);
 
