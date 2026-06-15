@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { QuesaurillasDb } from './quesaurillas-db';
+
 
 export interface Venta {
   id: number;
@@ -30,8 +30,8 @@ export interface VentaCompleta {
 
 
 export class Ventas {
-  private db= inject(QuesaurillasDb);
-
+  
+/*
   getVentas(): Venta[] {
     return this.db.query<Venta>(`SELECT * FROM ventas WHERE estado= 'pagada' ORDER BY fecha DESC`);
   }
@@ -87,5 +87,5 @@ export class Ventas {
     }));
   }
 
-
+*/
 }

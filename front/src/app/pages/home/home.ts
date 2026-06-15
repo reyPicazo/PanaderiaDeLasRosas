@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { Navbar } from '../../components/navbar/navbar';
 import { CommonModule } from '@angular/common';
-import { OrdenService } from '../../services/orden';
-import { Orden } from '../../models/orden.model';
+
 import { Subscription } from 'rxjs';
 import { CrearOrden } from '../crear-orden/crear-orden';
 import { FormsModule } from '@angular/forms';
-import { InventarioSQ } from '../../services/inventario-sq';
-import { Ventas } from '../../services/ventas';
+import { OrdenService } from '../../services/orden.service';
+import { Orden } from '../../models/orden';
+
 
 @Component({
   selector: 'app-home',
@@ -18,80 +18,109 @@ import { Ventas } from '../../services/ventas';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit, OnDestroy {
-  private sub:Subscription | undefined;
+export class Home implements OnInit {
   ordenes: Orden[] = [];
   ordenActual: Orden | undefined;
-  modificarOrden:CrearOrden | undefined;
-  cancelar:boolean=false;
-  admin:string='';
-  password:string='';
-  mostrarPagar:boolean=false;
-  pagoCliente:number | undefined;
-  cambio:number=0;
-
-  constructor(private auth: AuthService, private router: Router, private ordenService: OrdenService, public inventarioService: InventarioSQ, private ventasService: Ventas) {}
-
-  ngOnInit() {
-    this.ordenes=this.ordenService.getOrdenes();
-    this.sub = this.ordenService.getOrdenActual$().subscribe(orden => {
-      this.ordenActual = orden;
-      this.ordenes=this.ordenService.getOrdenes();
-    });
-    console.log(this.ordenes);
-  }
-
+  mostrarPagar: boolean = false;
   mostrarPagoExitoso: boolean = false;
+  mostrarCancelar: boolean = false;
+  pagoCliente: number | undefined;
+  cambio: number = 0;
 
-  seleccionarOrden(orden:Orden){
-    this.ordenActual = orden;
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private ordenService: OrdenService,
+    private cdr: ChangeDetectorRef
+  ) {}
+  ngOnInit() {
+    this.cargarOrdenes();
   }
 
-  editarOrden(orden:Orden){
-    if(this.ordenActual){
-      this.ordenService.saveOrdenEditar(orden.id);
-
-      //Aqui vamos a agregar las quesadillas y nuggets de nuevo al inventario, para que al editar la orden, se pueda modificar la cantidad de quesadillas y nuggets sin que se reste del inventario actual
-      //this.inventarioService.setQuesadillas(this.inventarioService.getQuesadillas() + orden.quesadillas);
-      this.inventarioService.returnCantidad(1, orden.quesadillas);
-
-      //this.inventarioService.setNugets(this.inventarioService.getNugets() + orden.nuggets);
-      this.inventarioService.returnCantidad(2, orden.nuggets);
-
-      this.router.navigate(['/crear-orden']);
-      
+  cargarOrdenes(){
+    const empleado = this.auth.getEmpleado();
+    if(!empleado){
+      this.router.navigate(['/login']);
+      return;
     }
+
+    this.ordenService.getOrdenes(0,empleado!.idEmpleado).subscribe({
+      next:(data)=>{
+        this.ordenes=data;
+        if(data.length>0){
+          this.seleccionarOrden(data[0]);
+        }else{
+          this.ordenActual=undefined;
+        }
+        
+        this.cdr.detectChanges();
+      },
+      error:()=>console.error("Error al cargar ordenes")
+    })
+  }
+
+  calcularTotal(orden: Orden): number {
+    if(!orden.detalles) return 0;
+    return orden.detalles.reduce((total, detalle) => total + detalle.cantidad * detalle.pan.precio, 0);
+  }
+
+  seleccionarOrden(orden: Orden) {
+    this.ordenService.getOrdenById(orden.idOrden).subscribe({
+      next:(data)=>{
+        this.ordenActual=data;
+        this.cdr.detectChanges();
+      },
+      error: ()=>console.error("Error al cargar detalles de la orden")
+    });
+  }
+
+  editarOrden(orden: Orden) {
+    this.ordenService.getOrdenById(orden.idOrden).subscribe({
+      next:(ordenCompleta)=>{
+        this.ordenService.setOrdenEditar(ordenCompleta);
+        this.router.navigate(['/crear-orden']);
+      },
+      error:()=>console.error('Error al cargar la orden al editar')
+    })
+  }
+
+
+
+  confirmarCancelar(){
+    this.mostrarCancelar=true;
     
   }
 
-
-
-  confirmareliminarOrden(){
-    this.cancelar=true;
-    
-  }
-
-  async eliminarOrden(orden:Orden){
-    if(await this.auth.login(this.admin, this.password)){
-      if(this.ordenActual){
-      this.ordenService.eliminarOrden(orden.id);
-      this.ordenes=this.ordenService.getOrdenes();
-      this.ordenActual=this.ordenes.length > 0 ? this.ordenes[0] : undefined;
-      this.cancelar=false;
-      this.admin='';
-      this.password='';
-    }
-    }
-    
+  cancelarOrden(){
+    if(!this.ordenActual) return;
+    this.ordenService.actualizarEstado(this.ordenActual.idOrden, -1).subscribe({
+      next:()=>{
+        this.mostrarCancelar=false;
+        this.cargarOrdenes();
+      },
+      error: ()=> console.error("Error al cancelar la orden")
+    });
   }
 
   pagarOrden(){
-    this.mostrarPagar=true;
+    if(!this.ordenActual) return;
+
+    if(!this.ordenActual.detalles){
+      this.ordenService.getOrdenById(this.ordenActual.idOrden).subscribe({
+        next:(orden)=>{
+          this.ordenActual=orden;
+          this.mostrarPagar=true;
+          this.cdr.detectChanges();
+        }
+      });
+    }else{
+      this.mostrarPagar=true;
+    }
   }
 
   calcularCambio(){
-    if(this.ordenActual && this.pagoCliente){
-      this.cambio = this.pagoCliente - this.ordenActual.total;
+    if(this.ordenActual&&this.pagoCliente){
+      this.cambio=this.pagoCliente-this.calcularTotal(this.ordenActual);
     }
   }
 
@@ -102,37 +131,31 @@ export class Home implements OnInit, OnDestroy {
   }
 
   funcionPagar(){
-    if(this.ordenActual && this.pagoCliente!==undefined && this.cambio >= 0){
+    if(!this.ordenActual || this.pagoCliente === undefined || this.cambio < 0) return;
 
-      this.ventasService.pagarVenta(this.ordenActual.ventaId);
-
-      this.ordenService.pushOrdenPagada(this.ordenActual);
-      this.ordenService.eliminarOrdenPagada(this.ordenActual.id);
-      this.ordenes=this.ordenService.getOrdenes();
-      this.ordenActual=this.ordenes.length > 0 ? this.ordenes[0] : undefined;
-
-
-      this.mostrarPagar=false;
-      this.pagoCliente=undefined;
-      this.cambio=0;
-      this.mostrarPagoExitoso=true;
-      
-    }
-
+    this.ordenService.actualizarEstado(this.ordenActual.idOrden, 1).subscribe({
+      next:()=>{
+        this.mostrarPagar=false;
+        this.mostrarPagoExitoso=true;
+        this.pagoCliente=undefined;
+        this.cambio=0;
+        this.cargarOrdenes();
+      },
+      error:()=>console.error("Error al procesar el pago")
+    });
   }
 
   cerrarPagoExitoso() {
     this.mostrarPagoExitoso = false;
   }
 
-  ngOnDestroy(): void {
-    
-    this.sub?.unsubscribe();
-  }
-
   crearOrden(){
     this.router.navigate(['/crear-orden']);
   }
+
+  
+
+  
 
   logout(){
     this.auth.logout();

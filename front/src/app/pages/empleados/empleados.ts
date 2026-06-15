@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { Navbar } from '../../components/navbar/navbar';
@@ -29,7 +29,8 @@ export class Empleados implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
-    public empleadoService: EmpleadoService
+    public empleadoService: EmpleadoService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -115,9 +116,13 @@ export class Empleados implements OnInit {
   }
 
   getEmpleados() {
-    this.empleadoService.getEmpleados().subscribe({
-      next: (data) => (this.empleados = data),
-      error: () => this.toast('No se pudieron cargar los empleados'),
-    });
-  }
+  this.empleadoService.getEmpleados().subscribe({
+    next: (data) => {
+      console.log('Empleados:', data);  // ← agrega esto
+      this.empleados = data;
+      this.cdr.detectChanges();
+    },
+    error: () => this.toast('No se pudieron cargar los empleados'),
+  });
+}
 }

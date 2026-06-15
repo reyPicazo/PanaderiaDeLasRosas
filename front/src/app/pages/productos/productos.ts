@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { Navbar } from '../../components/navbar/navbar';
@@ -28,7 +28,8 @@ export class Productos implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
-    public panService: PanService
+    public panService: PanService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -108,7 +109,11 @@ export class Productos implements OnInit {
 
   getProductos() {
     this.panService.getPanes().subscribe({
-      next: (data) => (this.productos = data),
+      next: (data) => {
+      this.productos = data;
+      this.cdr.detectChanges();
+    },
+
       error: (err) => this.toast('No se pudieron cargar los productos'),
     });
   }

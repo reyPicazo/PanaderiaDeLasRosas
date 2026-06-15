@@ -1,34 +1,25 @@
-import { Injectable, inject } from '@angular/core';
-import { Users } from './users';
+import { Injectable } from '@angular/core';
+import { Empleado } from '../models/empleado';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  
-  private usersService= inject(Users);
+  private empleadoActual: Empleado | null = null;
 
-  async login(username:string, password:string): Promise<boolean> {
-    const user = await this.usersService.getUserforLogin(username, password);
-    if(user){
-      localStorage.setItem('sesion', 'true');
-      localStorage.setItem('usuario', username);
-      return true;
-    }
-    return false;
+  login(empleado: Empleado): void {
+    this.empleadoActual = empleado;
   }
 
-  logout():void{
-    localStorage.removeItem('sesion');
-    localStorage.removeItem('usuario');
-
+  logout(): void {
+    this.empleadoActual = null;
   }
 
-  isLoggedIn():boolean{
-    return localStorage.getItem('sesion') === 'true';
+  isLoggedIn(): boolean {
+    return this.empleadoActual !== null;
   }
 
-  getUser():string{
-    return localStorage.getItem('usuario') ?? 'invitado';
+  getEmpleado(): Empleado | null {
+    return this.empleadoActual;
   }
 }

@@ -1,0 +1,81 @@
+<app-navbar>
+  <div class="fondo">
+
+    <div class="cabecera">
+      <h2 class="titulo-seccion">Reporte de Órdenes</h2>
+    </div>
+
+    <div *ngIf="!cargando && ordenes.length === 0" class="vacio">
+      <p>No hay órdenes registradas.</p>
+    </div>
+
+    <div class="grid-ordenes" *ngIf="ordenes.length > 0">
+      <button
+        class="tarjeta-orden"
+        *ngFor="let o of ordenes"
+        (click)="abrirDetalle(o)">
+        <div class="tarjeta-top">
+          <span class="orden-id">Orden #{{ o.idOrden }}</span>
+          <span class="badge" [ngClass]="claseEstado(o.estado)">
+            {{ etiquetaEstado(o.estado) }}
+          </span>
+        </div>
+        <div class="tarjeta-info">
+          <span>👤 {{ o.cliente.nombre }}</span>
+          <span>🧑‍🍳 {{ o.empleado.nombre }}</span>
+          <span>📅 {{ o.fecha | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </button>
+    </div>
+
+    <div class="overlay" *ngIf="ordenSeleccionada">
+      <div class="modal-detalle">
+
+        <div class="modal-header-dino">
+          <h3>Orden #{{ ordenSeleccionada.idOrden }}</h3>
+          <span class="badge" [ngClass]="claseEstado(ordenSeleccionada.estado)">
+            {{ etiquetaEstado(ordenSeleccionada.estado) }}
+          </span>
+        </div>
+
+        <div class="modal-meta">
+          <span>👤 <strong>{{ ordenSeleccionada.cliente.nombre }}</strong></span>
+          <span>🧑‍🍳 <strong>{{ ordenSeleccionada.empleado.nombre }}</strong></span>
+          <span>📅 <strong>{{ ordenSeleccionada.fecha | date:'dd/MM/yyyy' }}</strong></span>
+        </div>
+
+        <div class="tabla-container">
+          <table class="tabla-dino w-100">
+            <thead>
+              <tr class="fila-header">
+                <th>Pan</th>
+                <th>Cantidad</th>
+                <th>Precio unit.</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of ordenSeleccionada.detalles; let i = index"
+                  [class]="i % 2 === 0 ? 'fila-roja' : 'fila-blanca'">
+                <td>{{ d.pan.nombre }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>${{ d.pan.precio }}</td>
+                <td>${{ d.pan.precio * d.cantidad }}</td>
+              </tr>
+              <tr class="fila-total">
+                <td colspan="3"><strong>Total</strong></td>
+                <td><strong>${{ calcularTotal(ordenSeleccionada) }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal-footer-dino">
+          <button class="btn-amarillo" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</app-navbar>

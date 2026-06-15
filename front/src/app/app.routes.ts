@@ -4,10 +4,11 @@ import { Home } from './pages/home/home';
 import { authGuard } from './guards/auth-guard';
 import { CrearOrden } from './pages/crear-orden/crear-orden';
 import { Administrar } from './pages/administrar/administrar';
-import { Inventario } from './pages/inventario/inventario';
+
 import { Productos } from './pages/productos/productos';
 import { Empleados } from './pages/empleados/empleados';
 import { Clientes } from './pages/clientes/clientes';
+import { ReporteOrdenes } from './pages/reporte-ordenes/reporte-ordenes';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -15,8 +16,8 @@ export const routes: Routes = [
     {path: 'home', component: Home, canActivate: [authGuard]},
     {path: 'crear-orden', component:CrearOrden, canActivate: [authGuard]},
     {path: 'administrar', component: Administrar, canActivate: [authGuard]},
-    {path: 'inventario', component: Inventario, canActivate: [authGuard]}, 
     {path: 'productos', component: Productos, canActivate: [authGuard]},
     {path: 'empleados', component: Empleados, canActivate: [authGuard]},
     {path: 'clientes', component: Clientes, canActivate: [authGuard]},
+    {path: 'inventario', component: ReporteOrdenes, canActivate: [authGuard]},
 ];
