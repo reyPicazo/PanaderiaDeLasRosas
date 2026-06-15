@@ -9,7 +9,7 @@ interface CrearOrdenPagar{
   fecha:string,
   ClienteId:number,
   EmpleadoId:number,
-  detalles: {PanidPan: number, cantidad: number}[];
+  detalles: {PanidPan: number, cantidad: number}[]
 }
 
 @Injectable({
@@ -21,12 +21,12 @@ export class OrdenService {
   constructor(private http: HttpClient) {}
 
 
-  getOrdenes(estado?:-1|0|1, empleadoId?: number): Observable<Orden[]> {
+  getOrdenes(estado?:-1|0|1, EmpleadoId?: number): Observable<Orden[]> {
     let params =new HttpParams();
     if(estado !== undefined){
       params = params.set('estado', estado.toString());
     }
-     if (empleadoId !== undefined) params = params.set('EmpleadoId', empleadoId.toString());
+     if (EmpleadoId !== undefined) params = params.set('EmpleadoId', EmpleadoId.toString());
     return this.http.get<Orden[]>(this.apiUrl, {params});
   }
 
