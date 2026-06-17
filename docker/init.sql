@@ -59,7 +59,8 @@ INSERT INTO Empleado (nombre, direccion, telefono) VALUES
     ('Roberto',   'Calle 5 de Mayo 22, Zacatecas', '4929001001'),
     ('Gabriela Lara',   'Av. Universidad 10, Zacatecas', '4929002002'),
     ('Ernesto',    'Calle Allende 55, Loreto',      '4929003003'),
-    ('Rey',    'Indiana Jones 55, Egipto',      '44978912345');
+    ('Rey',    'Indiana Jones 55, Egipto',      '44978912345'),
+    ('cucho',    'Indiana Jones 55, Egipto',      '44978912345');
 
 INSERT INTO Pan (nombre, precio) VALUES
     ('Concha',           8.50),
